@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Esteban Espinosa — IT & IAM Specialist</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:        #0d1b2a;
+      --navy-mid:    #132238;
+      --navy-card:   #162844;
+      --teal:        #2dd4bf;
+      --teal-dim:    rgba(45, 212, 191, 0.12);
+      --sky:         #7dd3fc;
+      --white:       #f0f6ff;
+      --muted:       #7a9bb5;
+      --border-soft: rgba(255,255,255,0.07);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--navy);
+      color: var(--white);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ── CURSOR (hidden on touch) ── */
+    .cursor, .cursor-ring { display: none; }
+    @media (hover: hover) and (pointer: fine) {
+      .cursor {
+        display: block; position: fixed; width: 10px; height: 10px;
+        background: var(--teal); border-radius: 50%;
+        pointer-events: none; z-index: 9999;
+        transform: translate(-50%,-50%);
+        transition: transform 0.1s ease;
+      }
+      .cursor-ring {
+        display: block; position: fixed; width: 36px; height: 36px;
+        border: 1.5px solid rgba(45,212,191,0.45); border-radius: 50%;
+        pointer-events: none; z-index: 9998;
+        transform: translate(-50%,-50%);
+        transition: all 0.14s ease;
+      }
+      body { cursor: none; }
+    }
+
+    /* Dot grid bg */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: radial-gradient(rgba(45,212,191,0.055) 1px, transparent 1px);
+      background-size: 36px 36px;
+      pointer-events: none; z-index: 0;
+    }
+
+    /* ══════════════════════════════
+       NAV
+    ══════════════════════════════ */
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 100;
+      padding: 18px 64px;
+      display: flex; justify-content: space-between; align-items: center;
+      background: rgba(13,27,42,0.90);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-soft);
+    }
+    .nav-logo {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.2rem; color: var(--white);
+    }
+    .nav-logo span { color: var(--teal); }
+
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a {
+      text-decoration: none; color: var(--muted);
+      font-size: 0.76rem; letter-spacing: 0.12em;
+      text-transform: uppercase; font-weight: 600;
+      transition: color 0.25s;
+    }
+    .nav-links a:hover { color: var(--teal); }
+
+    /* Mobile hamburger */
+    .nav-toggle {
+      display: none; flex-direction: column; gap: 5px;
+      background: none; border: none; cursor: pointer; padding: 4px;
+    }
+    .nav-toggle span {
+      display: block; width: 24px; height: 2px;
+      background: var(--white); border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+    .nav-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav-toggle.open span:nth-child(2) { opacity: 0; }
+    .nav-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    .mobile-menu {
+      display: none; position: fixed; top: 62px; left: 0; right: 0;
+      background: rgba(13,27,42,0.98); backdrop-filter: blur(20px);
+      padding: 28px 30px; z-index: 99;
+      border-bottom: 1px solid var(--border-soft);
+      flex-direction: column; gap: 20px;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      text-decoration: none; color: var(--muted);
+      font-size: 1rem; letter-spacing: 0.1em;
+      text-transform: uppercase; font-weight: 600;
+      transition: color 0.25s; padding: 8px 0;
+      border-bottom: 1px solid var(--border-soft);
+    }
+    .mobile-menu a:last-child { border-bottom: none; }
+    .mobile-menu a:hover { color: var(--teal); }
+
+    /* ══════════════════════════════
+       HERO — Binjan style
+    ══════════════════════════════ */
+    .hero {
+      min-height: 100vh;
+      display: flex; align-items: center;
+      padding: 90px 64px 60px;
+      position: relative; overflow: hidden; z-index: 1;
+    }
+
+    /* Ambient glow top-right */
+    .hero-glow {
+      position: absolute; top: -60px; right: -60px;
+      width: 600px; height: 600px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(45,212,191,0.10) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      width: 100%; max-width: 1160px; position: relative; z-index: 2;
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      grid-template-rows: auto auto;
+      gap: 0 60px;
+      align-items: center;
+    }
+
+    /* Left column — text */
+    .hero-text { grid-column: 1; grid-row: 1 / 3; }
+
+    .hero-greeting {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+      font-weight: 700; letter-spacing: 0.08em;
+      color: var(--teal); margin-bottom: 8px;
+      opacity: 0; animation: fadeUp 0.6s ease 0.1s forwards;
+    }
+
+    .hero-name {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(3.4rem, 8vw, 7rem);
+      font-weight: 400; line-height: 1.0;
+      margin-bottom: 24px;
+      opacity: 0; animation: fadeUp 0.7s ease 0.25s forwards;
+    }
+    .hero-name em {
+      display: block; color: var(--teal); font-style: italic;
+    }
+
+    .hero-tagline {
+      font-size: clamp(0.82rem, 1.5vw, 0.92rem);
+      line-height: 1.8; color: rgba(240,246,255,0.52);
+      max-width: 420px; margin-bottom: 36px;
+      opacity: 0; animation: fadeUp 0.7s ease 0.4s forwards;
+    }
+
+    .hero-quote {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(1rem, 1.8vw, 1.15rem);
+      font-style: italic;
+      color: rgba(240,246,255,0.4);
+      line-height: 1.7; max-width: 400px;
+      padding-left: 18px; border-left: 2px solid var(--teal);
+      margin-bottom: 44px;
+      opacity: 0; animation: fadeUp 0.7s ease 0.55s forwards;
+    }
+
+    .hero-meta {
+      display: flex; align-items: center; gap: 36px; flex-wrap: wrap;
+      margin-bottom: 40px;
+      opacity: 0; animation: fadeUp 0.7s ease 0.65s forwards;
+    }
+    .hero-stat { display: flex; flex-direction: column; gap: 2px; }
+    .hero-stat-num {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2.2rem; color: var(--teal); line-height: 1;
+    }
+    .hero-stat-label {
+      font-size: 0.65rem; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--muted); font-weight: 600;
+    }
+    .hero-stat-div {
+      width: 1px; height: 48px; background: var(--border-soft);
+    }
+
+    .hero-cta {
+      display: flex; gap: 14px; flex-wrap: wrap;
+      opacity: 0; animation: fadeUp 0.7s ease 0.75s forwards;
+    }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 13px 28px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.76rem; letter-spacing: 0.14em;
+      text-transform: uppercase; font-weight: 700;
+      text-decoration: none; border-radius: 6px;
+      transition: all 0.28s ease; cursor: none;
+    }
+    .btn-primary { background: var(--teal); color: var(--navy); }
+    .btn-primary:hover {
+      background: #5eead4; transform: translateY(-2px);
+      box-shadow: 0 14px 36px rgba(45,212,191,0.28);
+    }
+    .btn-outline { border: 1.5px solid rgba(45,212,191,0.4); color: var(--teal); }
+    .btn-outline:hover {
+      border-color: var(--teal); background: var(--teal-dim);
+      transform: translateY(-2px);
+    }
+
+    /* Right column — photo */
+    .hero-photo-col {
+      grid-column: 2; grid-row: 1 / 3;
+      display: flex; justify-content: center; align-items: center;
+      opacity: 0; animation: fadeIn 0.9s ease 0.3s forwards;
+      position: relative;
+    }
+
+    /* Brush stroke SVG behind avatar */
+    .brush-stroke {
+      position: absolute;
+      width: 380px; height: 380px;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%) rotate(-8deg);
+      opacity: 0.18;
+      z-index: 0;
+    }
+
+    /* Spinning rings */
+    .avatar-rings {
+      position: absolute; inset: -18px; border-radius: 50%;
+      border: 1.5px dashed rgba(45,212,191,0.22);
+      animation: spinSlow 22s linear infinite;
+    }
+    .avatar-rings-2 {
+      position: absolute; inset: -32px; border-radius: 50%;
+      border: 1px dashed rgba(45,212,191,0.10);
+      animation: spinSlow 36s linear infinite reverse;
+    }
+    @keyframes spinSlow { to { transform: rotate(360deg); } }
+
+    .avatar-frame {
+      position: relative; z-index: 1;
+      width: 300px; height: 300px;
+    }
+
+    /*
+      ╔════════════════════════════════════════════════════╗
+      ║  📸  CÓMO PONER TU FOTO                           ║
+      ╠════════════════════════════════════════════════════╣
+      ║  1. Borra el <div class="avatar-placeholder">     ║
+      ║     (con todo lo que hay adentro)                 ║
+      ║                                                   ║
+      ║  2. Pon esto en su lugar:                         ║
+      ║     <img class="avatar-img" src="esteban.jpg"     ║
+      ║          alt="Esteban Espinosa">                  ║
+      ║                                                   ║
+      ║  3. Guarda la foto en la misma carpeta que        ║
+      ║     este archivo index.html                       ║
+      ║                                                   ║
+      ║  RECOMENDACIONES:                                 ║
+      ║  ✅ Cuadrada (1:1), mínimo 400×400 px             ║
+      ║  ✅ JPG o PNG, fondo liso o transparente          ║
+      ║  ✅ Sin espacios en el nombre del archivo         ║
+      ╚════════════════════════════════════════════════════╝
+    -->
+
+    .avatar-img {
+      width: 300px; height: 300px; border-radius: 50%;
+      border: 3px solid rgba(45,212,191,0.35);
+      object-fit: cover; object-position: top; display: block;
+    }
+
+    .avatar-placeholder {
+      width: 300px; height: 300px; border-radius: 50%;
+      border: 3px solid rgba(45,212,191,0.3);
+      background: var(--navy-card);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 8px;
+    }
+    .avatar-initials {
+      font-family: 'DM Serif Display', serif;
+      font-size: 5rem; color: var(--teal); line-height: 1;
+    }
+    .avatar-label {
+      font-size: 0.62rem; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--muted); font-weight: 600;
+    }
+
+    /* Badge over photo */
+    .hero-badge {
+      position: absolute; bottom: 10px; right: -10px;
+      background: var(--navy-card);
+      border: 1px solid rgba(45,212,191,0.3);
+      border-radius: 10px; padding: 12px 18px;
+      display: flex; align-items: center; gap: 10px;
+      z-index: 3;
+    }
+    .badge-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--teal);
+      box-shadow: 0 0 10px var(--teal);
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; } 50% { opacity: 0.4; }
+    }
+    .badge-text {
+      font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 0.06em; color: var(--white);
+    }
+    .badge-sub {
+      font-size: 0.62rem; color: var(--muted); font-weight: 500;
+    }
+
+    /* ══════════════════════════════
+       SECTIONS
+    ══════════════════════════════ */
+    section { padding: 100px 64px; position: relative; z-index: 1; }
+    .section-alt { background: var(--navy-mid); }
+
+    .section-header {
+      display: flex; align-items: center; gap: 18px; margin-bottom: 64px;
+    }
+    .section-num {
+      font-family: 'DM Serif Display', serif;
+      font-size: 0.9rem; color: var(--teal); font-style: italic;
+    }
+    .section-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem); font-weight: 400;
+    }
+    .section-line { flex: 1; height: 1px; background: var(--border-soft); }
+
+    /* ── ABOUT ── */
+    .about-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 64px; align-items: start;
+    }
+    .about-text p {
+      font-size: 0.98rem; line-height: 1.9;
+      color: rgba(240,246,255,0.65); margin-bottom: 18px;
+    }
+    .about-text p strong { color: var(--teal); font-weight: 600; }
+    .about-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; }
+    .stat-card {
+      background: var(--navy-card); border: 1px solid var(--border-soft);
+      padding: 28px 24px; border-radius: 8px;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .stat-card:hover { border-color: rgba(45,212,191,0.3); transform: translateY(-3px); }
+    .stat-number {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2.8rem; color: var(--teal); line-height: 1; margin-bottom: 6px;
+    }
+    .stat-label {
+      font-size: 0.68rem; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--muted); font-weight: 600;
+    }
+
+    /* ── TIMELINE ── */
+    .timeline { position: relative; padding-left: 36px; max-width: 860px; }
+    .timeline::before {
+      content: ''; position: absolute; left: 0; top: 8px; bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--teal), transparent);
+      opacity: 0.25; border-radius: 2px;
+    }
+    .timeline-item {
+      position: relative; margin-bottom: 52px;
+      opacity: 0; transform: translateX(-16px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .timeline-item.visible { opacity: 1; transform: translateX(0); }
+    .timeline-dot {
+      position: absolute; left: -43px; top: 6px;
+      width: 16px; height: 16px; border-radius: 50%;
+      border: 2px solid var(--teal); background: var(--navy);
+      transition: background 0.3s;
+    }
+    .timeline-item:hover .timeline-dot { background: var(--teal); }
+    .timeline-meta {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 8px; flex-wrap: wrap;
+    }
+    .timeline-period {
+      font-size: 0.7rem; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--teal); font-weight: 700;
+    }
+    .timeline-sep { width: 14px; height: 1px; background: var(--border-soft); }
+    .timeline-industry {
+      font-size: 0.7rem; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--muted); font-weight: 600;
+    }
+    .timeline-role {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.45rem; font-weight: 400; margin-bottom: 4px;
+    }
+    .timeline-company {
+      font-size: 0.78rem; color: var(--muted); margin-bottom: 14px;
+    }
+    .timeline-desc {
+      font-size: 0.92rem; line-height: 1.85;
+      color: rgba(240,246,255,0.52); max-width: 660px; margin-bottom: 12px;
+    }
+    .timeline-highlights { display: flex; flex-direction: column; gap: 8px; }
+    .highlight {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: 0.88rem; line-height: 1.6;
+      color: rgba(240,246,255,0.5);
+    }
+    .highlight::before {
+      content: '→'; color: var(--teal); font-weight: 700;
+      flex-shrink: 0; margin-top: 1px;
+    }
+    .highlight strong { color: var(--teal); font-weight: 600; }
+
+    /* ── SKILLS ── */
+    .skills-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .skill-group {
+      background: var(--navy-card); border: 1px solid var(--border-soft);
+      padding: 32px 26px; border-radius: 10px;
+      opacity: 0; transform: translateY(18px);
+    }
+    .skill-group.visible {
+      opacity: 1; transform: translateY(0);
+      transition: opacity 0.55s ease, transform 0.55s ease, border-color 0.3s, box-shadow 0.3s;
+    }
+    .skill-group:hover {
+      border-color: rgba(45,212,191,0.3); transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(45,212,191,0.06);
+    }
+    .skill-icon { font-size: 1.4rem; margin-bottom: 12px; display: block; }
+    .skill-group-title {
+      font-size: 0.66rem; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--teal);
+      font-weight: 700; margin-bottom: 16px;
+    }
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 7px; }
+    .skill-tag {
+      padding: 5px 11px; font-size: 0.73rem;
+      color: rgba(240,246,255,0.55);
+      border: 1px solid var(--border-soft);
+      border-radius: 20px; font-weight: 500; transition: all 0.2s;
+    }
+    .skill-tag:hover { border-color: rgba(45,212,191,0.4); color: var(--teal); }
+
+    /* ── CERTS ── */
+    .certs-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 12px;
+    }
+    .cert-card {
+      background: var(--navy-card); border: 1px solid var(--border-soft);
+      padding: 28px 24px; border-radius: 10px;
+      display: flex; align-items: flex-start; gap: 16px;
+      opacity: 0; transform: translateY(18px);
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .cert-card.visible {
+      opacity: 1; transform: translateY(0);
+      transition: opacity 0.55s ease, transform 0.55s ease, border-color 0.3s;
+    }
+    .cert-card:hover { border-color: rgba(45,212,191,0.3); transform: translateY(-3px); }
+    .cert-badge {
+      width: 42px; height: 42px; border-radius: 8px;
+      background: var(--teal-dim); border: 1px solid rgba(45,212,191,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; flex-shrink: 0;
+    }
+    .cert-name {
+      font-family: 'DM Serif Display', serif; font-size: 1.1rem; margin-bottom: 4px;
+    }
+    .cert-body {
+      font-size: 0.7rem; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 10px;
+    }
+    .cert-status {
+      display: inline-block; font-size: 0.62rem;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      padding: 4px 10px; border-radius: 20px; font-weight: 700;
+    }
+    .cert-status.active {
+      background: rgba(45,212,191,0.12); color: var(--teal);
+      border: 1px solid rgba(45,212,191,0.25);
+    }
+    .cert-status.progress {
+      background: rgba(125,211,252,0.08); color: var(--sky);
+      border: 1px solid rgba(125,211,252,0.2);
+    }
+
+    /* ── CONTACT ── */
+    .contact-intro {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(1.5rem, 3vw, 2.3rem);
+      font-style: italic; color: rgba(240,246,255,0.38);
+      max-width: 600px; line-height: 1.5; margin-bottom: 48px;
+    }
+    .contact-links { display: flex; flex-direction: column; gap: 10px; max-width: 680px; }
+    .contact-link {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 22px 28px; background: var(--navy-card);
+      border: 1px solid var(--border-soft); border-radius: 10px;
+      text-decoration: none; color: var(--white);
+      transition: all 0.28s ease;
+    }
+    .contact-link:hover {
+      border-color: rgba(45,212,191,0.4); background: var(--teal-dim);
+      transform: translateX(8px);
+    }
+    .contact-link-label {
+      font-size: 0.64rem; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--muted);
+      font-weight: 700; margin-bottom: 4px;
+    }
+    .contact-link-value {
+      font-family: 'DM Serif Display', serif; font-size: 1.15rem;
+    }
+    .contact-arrow { color: var(--teal); font-size: 1.2rem; transition: transform 0.3s; }
+    .contact-link:hover .contact-arrow { transform: translateX(6px); }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 32px 64px; border-top: 1px solid var(--border-soft);
+      display: flex; justify-content: space-between; align-items: center;
+      position: relative; z-index: 1; flex-wrap: wrap; gap: 12px;
+    }
+    .footer-text { font-size: 0.72rem; letter-spacing: 0.1em; color: var(--muted); }
+    .footer-teal { color: var(--teal); font-weight: 600; }
+    .footer-italic {
+      font-family: 'DM Serif Display', serif;
+      font-style: italic; font-size: 0.85rem; color: rgba(240,246,255,0.2);
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--navy); }
+    ::-webkit-scrollbar-thumb { background: rgba(45,212,191,0.3); border-radius: 2px; }
+
+    /* ══════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════ */
+
+    /* Tablet */
+    @media (max-width: 1024px) {
+      nav { padding: 18px 36px; }
+      section { padding: 80px 36px; }
+      .hero { padding: 90px 36px 60px; }
+      .hero-inner { grid-template-columns: 1fr 320px; gap: 40px; }
+      .avatar-frame { width: 260px; height: 260px; }
+      .avatar-placeholder, .avatar-img { width: 260px; height: 260px; }
+      .avatar-initials { font-size: 4rem; }
+      .brush-stroke { width: 320px; height: 320px; }
+      .skills-grid { grid-template-columns: 1fr 1fr; }
+      footer { padding: 28px 36px; }
+    }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+      nav { padding: 16px 24px; }
+      .nav-links { display: none; }
+      .nav-toggle { display: flex; }
+
+      .hero {
+        padding: 80px 24px 60px;
+        min-height: auto;
+      }
+      .hero-inner {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto;
+        gap: 40px;
+        text-align: center;
+      }
+      .hero-text { order: 2; }
+      .hero-photo-col { order: 1; justify-content: center; }
+
+      .hero-tagline, .hero-quote { max-width: 100%; }
+      .hero-meta { justify-content: center; }
+      .hero-cta { justify-content: center; }
+
+      .avatar-frame { width: 220px; height: 220px; }
+      .avatar-placeholder, .avatar-img { width: 220px; height: 220px; }
+      .avatar-initials { font-size: 3.5rem; }
+      .brush-stroke { width: 270px; height: 270px; }
+
+      .hero-badge { right: 50%; transform: translateX(50%); bottom: -20px; }
+
+      .about-grid { grid-template-columns: 1fr; gap: 40px; }
+      .about-stats { grid-template-columns: 1fr 1fr; }
+
+      .skills-grid { grid-template-columns: 1fr; }
+      .certs-grid { grid-template-columns: 1fr; }
+
+      section { padding: 64px 24px; }
+      footer { padding: 24px; justify-content: center; text-align: center; }
+
+      .timeline { padding-left: 28px; }
+      .timeline-dot { left: -36px; }
+      .contact-links { gap: 8px; }
+      .contact-link { padding: 18px 20px; }
+      .contact-link:hover { transform: none; }
+    }
+
+    /* Small mobile */
+    @media (max-width: 400px) {
+      .hero-name { font-size: 3rem; }
+      .hero-greeting { font-size: 1rem; }
+      .hero-meta { gap: 20px; }
+      .hero-stat-num { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">Esteban <span>Espinosa</span></div>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#certifications">Certs</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <button class="nav-toggle" id="navToggle" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- Mobile menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#about"          onclick="closeMenu()">About</a>
+    <a href="#experience"     onclick="closeMenu()">Experience</a>
+    <a href="#skills"         onclick="closeMenu()">Skills</a>
+    <a href="#certifications" onclick="closeMenu()">Certs</a>
+    <a href="#contact"        onclick="closeMenu()">Contact</a>
+  </div>
+
+  <!-- ═══ HERO ═══ -->
+  <section class="hero" id="home">
+    <div class="hero-glow"></div>
+    <div class="hero-inner">
+
+      <!-- TEXT -->
+      <div class="hero-text">
+        <div class="hero-greeting">Hey there, I'm</div>
+        <h1 class="hero-name">Esteban<em>Espinosa.</em></h1>
+        <p class="hero-tagline">
+          IT & Identity Security professional based in Perth, WA.<br>
+          I make sure the right people have access to the right things — and nobody else does.
+        </p>
+        <p class="hero-quote">
+          "I'll be the first to admit when I don't know —
+          and the last to stop until I do."
+        </p>
+        <div class="hero-meta">
+          <div class="hero-stat">
+            <div class="hero-stat-num">5+</div>
+            <div class="hero-stat-label">Years in IT</div>
+          </div>
+          <div class="hero-stat-div"></div>
+          <div class="hero-stat">
+            <div class="hero-stat-num">4</div>
+            <div class="hero-stat-label">Industries</div>
+          </div>
+          <div class="hero-stat-div"></div>
+          <div class="hero-stat">
+            <div class="hero-stat-num">60%</div>
+            <div class="hero-stat-label">Faster with automation</div>
+          </div>
+        </div>
+        <div class="hero-cta">
+          <a href="#experience" class="btn btn-primary">View Experience</a>
+          <a href="#contact" class="btn btn-outline">Get in Touch</a>
+        </div>
+      </div>
+
+      <!-- PHOTO -->
+      <div class="hero-photo-col">
+        <!-- Brush stroke behind avatar -->
+        <svg class="brush-stroke" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="200" cy="200" rx="190" ry="155" fill="#2dd4bf" transform="rotate(-10 200 200)"/>
+        </svg>
+
+        <div class="avatar-frame">
+          <div class="avatar-rings"></div>
+          <div class="avatar-rings-2"></div>
+
+          <!--
+            📸 PARA PONER TU FOTO:
+            1. Borra el <div class="avatar-placeholder"> (con todo lo que hay adentro)
+            2. Reemplázalo por:
+               <img class="avatar-img" src="esteban.jpg" alt="Esteban Espinosa">
+            3. Guarda la foto en la misma carpeta que este index.html
+            TIPS: cuadrada 1:1, mínimo 400px, JPG o PNG, sin espacios en el nombre
+          -->
+          <div class="avatar-placeholder">
+            <div class="avatar-initials">EE</div>
+            <div class="avatar-label">Your photo here</div>
+          </div>
+
+          <!-- Badge: open to work -->
+          <div class="hero-badge">
+            <div class="badge-dot"></div>
+            <div>
+              <div class="badge-text">Open to Work</div>
+              <div class="badge-sub">Perth, WA · Remote</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══ ABOUT ═══ -->
+  <section id="about" class="section-alt">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <h2 class="section-title">About</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>I'm an IT professional based in <strong>Perth, Australia</strong>, with over 5 years of experience across technical support and identity security. My journey spans multiple industries — giving me a perspective that goes beyond the technical and into the human side of IT.</p>
+        <p>My specialty is <strong>Identity & Access Management</strong>: controlling who has access to what, and making sure that access is earned, monitored, and revoked cleanly. I believe IAM is where security either holds or breaks — and I take that seriously.</p>
+        <p>I hold a <strong>Bachelor's degree in Networks & Telecommunications</strong> and a <strong>Diploma in Cybersecurity</strong> from UDLA, Ecuador. Currently preparing for the <strong>AZ-104</strong> and <strong>ITIL v4</strong> certifications while building automation workflows with <strong>n8n</strong>.</p>
+      </div>
+      <div class="about-stats">
+        <div class="stat-card"><div class="stat-number">5+</div><div class="stat-label">Years in IT</div></div>
+        <div class="stat-card"><div class="stat-number">4</div><div class="stat-label">Industries</div></div>
+        <div class="stat-card"><div class="stat-number">IAM</div><div class="stat-label">Core Specialization</div></div>
+        <div class="stat-card"><div class="stat-number">60%</div><div class="stat-label">Faster with automation</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ EXPERIENCE ═══ -->
+  <section id="experience">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <h2 class="section-title">Experience</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="timeline">
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-meta">
+          <span class="timeline-period">Mar 2025 — Present</span>
+          <div class="timeline-sep"></div>
+          <span class="timeline-industry">Independent · Perth, AU</span>
+        </div>
+        <div class="timeline-role">Independent IT Technician</div>
+        <div class="timeline-company">Self-employed · Perth, Western Australia</div>
+        <p class="timeline-desc">Providing end-to-end technical services to individual and small business clients. From hardware repairs to full OS installations, every engagement is handled with clear communication and a focus on long-term reliability.</p>
+        <div class="timeline-highlights">
+          <div class="highlight">Diagnose and resolve issues across Windows, Linux, and macOS — hardware, software, and drivers.</div>
+          <div class="highlight">Perform OS installations, system recovery, and partition-based setups from scratch.</div>
+          <div class="highlight">Handle data backup and recovery before any major system change.</div>
+          <div class="highlight">Translate technical problems into plain language so clients always understand what's happening and why.</div>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-meta">
+          <span class="timeline-period">Jan 2024 — Jan 2025</span>
+          <div class="timeline-sep"></div>
+          <span class="timeline-industry">Banking & Finance · Ecuador</span>
+        </div>
+        <div class="timeline-role">Identity Management Analyst</div>
+        <div class="timeline-company">TEUNO — Technology Services Provider (Financial Sector)</div>
+        <p class="timeline-desc">Managed digital identities for a financial sector client, handling the full lifecycle of user access — from onboarding to offboarding — with a strong focus on compliance, security, and risk reduction.</p>
+        <div class="timeline-highlights">
+          <div class="highlight">Managed VPN access, MFA configuration, and credential lifecycle following strict security and compliance standards.</div>
+          <div class="highlight"><strong>Built an automated process</strong> to monitor and clean unused VPN permissions — eliminating manual review entirely.</div>
+          <div class="highlight"><strong>Reduced VPN ticket response time by 60%</strong> through targeted process optimization and automation.</div>
+          <div class="highlight">Collaborated with cybersecurity, infrastructure, and development teams to maintain operational continuity.</div>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-meta">
+          <span class="timeline-period">Apr 2023 — Jan 2024</span>
+          <div class="timeline-sep"></div>
+          <span class="timeline-industry">Healthcare · Ecuador</span>
+        </div>
+        <div class="timeline-role">IT Support Technician</div>
+        <div class="timeline-company">Grupo EMI</div>
+        <p class="timeline-desc">Delivered Level 1 and Level 2 support to internal users across a healthcare environment — managing everything from device setup to server-side incidents, always with documentation and within SLA.</p>
+        <div class="timeline-highlights">
+          <div class="highlight">Provided on-site and remote support for servers and workstations across multiple locations.</div>
+          <div class="highlight">Set up, configured, and maintained desktops, laptops, and peripherals for new and existing staff.</div>
+          <div class="highlight">Escalated complex issues to senior engineers with clear context to minimize resolution time.</div>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-meta">
+          <span class="timeline-period">Sep 2020 — Nov 2022</span>
+          <div class="timeline-sep"></div>
+          <span class="timeline-industry">Automotive · Ecuador</span>
+        </div>
+        <div class="timeline-role">IT Support Engineer</div>
+        <div class="timeline-company">Frenos y Frenos</div>
+        <p class="timeline-desc">First IT role — supporting hardware and software across multiple branches and taking on system migrations and infrastructure improvements with measurable business impact.</p>
+        <div class="timeline-highlights">
+          <div class="highlight"><strong>Migrated the accounting system to a cloud platform</strong>, reducing manual workload by 20%.</div>
+          <div class="highlight"><strong>Improved internet performance by 40%</strong> through ISP evaluation and full network implementation.</div>
+          <div class="highlight">Upgraded legacy hardware across branches, resolving compatibility issues and extending equipment lifecycle.</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══ SKILLS ═══ -->
+  <section id="skills" class="section-alt">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <h2 class="section-title">Skills</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="skills-grid">
+      <div class="skill-group"><span class="skill-icon">🔐</span><div class="skill-group-title">Identity & Access</div><div class="skill-tags"><span class="skill-tag">Azure Entra ID</span><span class="skill-tag">AWS IAM</span><span class="skill-tag">User Lifecycle Mgmt</span><span class="skill-tag">VPN Access Control</span><span class="skill-tag">MFA Configuration</span><span class="skill-tag">RBAC</span><span class="skill-tag">Onboarding / Offboarding</span></div></div>
+      <div class="skill-group"><span class="skill-icon">🖥️</span><div class="skill-group-title">IT Support</div><div class="skill-tags"><span class="skill-tag">Windows 10/11</span><span class="skill-tag">Linux</span><span class="skill-tag">macOS</span><span class="skill-tag">Level 1 & 2 Support</span><span class="skill-tag">Hardware Repair</span><span class="skill-tag">Device Provisioning</span><span class="skill-tag">OS Installation</span></div></div>
+      <div class="skill-group"><span class="skill-icon">☁️</span><div class="skill-group-title">Cloud & Microsoft 365</div><div class="skill-tags"><span class="skill-tag">Microsoft Azure</span><span class="skill-tag">AWS</span><span class="skill-tag">Microsoft 365</span><span class="skill-tag">SharePoint</span><span class="skill-tag">Teams / OneDrive</span><span class="skill-tag">Active Directory</span></div></div>
+      <div class="skill-group"><span class="skill-icon">📋</span><div class="skill-group-title">Frameworks & Standards</div><div class="skill-tags"><span class="skill-tag">ISO 27001:2022</span><span class="skill-tag">COBIT 2019</span><span class="skill-tag">ITIL v4</span><span class="skill-tag">Risk Management</span><span class="skill-tag">Compliance</span></div></div>
+      <div class="skill-group"><span class="skill-icon">🎫</span><div class="skill-group-title">ITSM & Ticketing</div><div class="skill-tags"><span class="skill-tag">ServiceNow</span><span class="skill-tag">ManageEngine</span><span class="skill-tag">Jira</span><span class="skill-tag">Incident Management</span><span class="skill-tag">Documentation</span></div></div>
+      <div class="skill-group"><span class="skill-icon">⚙️</span><div class="skill-group-title">Networking & Automation</div><div class="skill-tags"><span class="skill-tag">LAN / WAN</span><span class="skill-tag">DNS / DHCP</span><span class="skill-tag">n8n Automation</span><span class="skill-tag">Process Optimization</span><span class="skill-tag">No-Code Workflows</span></div></div>
+    </div>
+  </section>
+
+  <!-- ═══ CERTIFICATIONS ═══ -->
+  <section id="certifications">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <h2 class="section-title">Certifications</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="certs-grid">
+      <div class="cert-card"><div class="cert-badge">🛡️</div><div><div class="cert-name">ISO 27001:2022</div><div class="cert-body">Internal Auditor</div><span class="cert-status active">Certified</span></div></div>
+      <div class="cert-card"><div class="cert-badge">🛡️</div><div><div class="cert-name">ISO 27001:2022</div><div class="cert-body">Information Security Management Professional</div><span class="cert-status active">Certified</span></div></div>
+      <div class="cert-card"><div class="cert-badge">📐</div><div><div class="cert-name">COBIT 2019</div><div class="cert-body">Fundamentals</div><span class="cert-status active">Certified</span></div></div>
+      <div class="cert-card"><div class="cert-badge">🎓</div><div><div class="cert-name">Diploma in Cybersecurity</div><div class="cert-body">UDLA · Universidad de las Américas · Ecuador</div><span class="cert-status active">Completed</span></div></div>
+      <div class="cert-card"><div class="cert-badge">☁️</div><div><div class="cert-name">AZ-104</div><div class="cert-body">Microsoft Azure Administrator</div><span class="cert-status progress">In Progress</span></div></div>
+      <div class="cert-card"><div class="cert-badge">⚙️</div><div><div class="cert-name">ITIL v4 Foundation</div><div class="cert-body">IT Service Management</div><span class="cert-status progress">In Progress</span></div></div>
+    </div>
+  </section>
+
+  <!-- ═══ CONTACT ═══ -->
+  <section id="contact" class="section-alt">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <h2 class="section-title">Contact</h2>
+      <div class="section-line"></div>
+    </div>
+    <p class="contact-intro">Open to new opportunities, collaborations,<br>and conversations about IAM & security.</p>
+    <div class="contact-links">
+      <a href="mailto:teban.mg46@gmail.com" class="contact-link">
+        <div><div class="contact-link-label">Email</div><div class="contact-link-value">teban.mg46@gmail.com</div></div>
+        <span class="contact-arrow">→</span>
+      </a>
+      <a href="https://www.linkedin.com/in/esteban-e-78a74b182/" target="_blank" class="contact-link">
+        <div><div class="contact-link-label">LinkedIn</div><div class="contact-link-value">linkedin.com/in/esteban-e-78a74b182</div></div>
+        <span class="contact-arrow">→</span>
+      </a>
+      <a href="tel:+61403420331" class="contact-link">
+        <div><div class="contact-link-label">Phone · Perth, WA</div><div class="contact-link-value">0403 420 331</div></div>
+        <span class="contact-arrow">→</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-text">© 2026 <span class="footer-teal">Esteban Espinosa</span> · Perth, WA · IAM & Cybersecurity</div>
+    <div class="footer-italic">Built to last. Secured by design.</div>
+  </footer>
+
+  <script>
+    // Custom cursor (desktop only)
+    const cursor = document.getElementById('cursor');
+    const ring   = document.getElementById('cursorRing');
+    if (cursor && ring) {
+      let mx = 0, my = 0, rx = 0, ry = 0;
+      document.addEventListener('mousemove', e => {
+        mx = e.clientX; my = e.clientY;
+        cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
+      });
+      (function animateRing() {
+        rx += (mx - rx) * 0.13; ry += (my - ry) * 0.13;
+        ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+        requestAnimationFrame(animateRing);
+      })();
+      document.querySelectorAll('a, button').forEach(el => {
+        el.addEventListener('mouseenter', () => {
+          cursor.style.transform = 'translate(-50%,-50%) scale(2.2)';
+          ring.style.transform   = 'translate(-50%,-50%) scale(1.6)';
+          ring.style.borderColor = 'rgba(45,212,191,0.75)';
+        });
+        el.addEventListener('mouseleave', () => {
+          cursor.style.transform = 'translate(-50%,-50%) scale(1)';
+          ring.style.transform   = 'translate(-50%,-50%) scale(1)';
+          ring.style.borderColor = 'rgba(45,212,191,0.45)';
+        });
+      });
+    }
+
+    // Mobile menu toggle
+    const toggle = document.getElementById('navToggle');
+    const menu   = document.getElementById('mobileMenu');
+    toggle.addEventListener('click', () => {
+      toggle.classList.toggle('open');
+      menu.classList.toggle('open');
+    });
+    function closeMenu() {
+      toggle.classList.remove('open');
+      menu.classList.remove('open');
+    }
+
+    // Scroll reveal
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'),
+            (entry.target.dataset.delay || 0) * 110);
+        }
+      });
+    }, { threshold: 0.10 });
+
+    document.querySelectorAll('.timeline-item, .skill-group, .cert-card').forEach((el, i) => {
+      el.dataset.delay = i % 3;
+      io.observe(el);
+    });
+  </script>
+</body>
+</html>
